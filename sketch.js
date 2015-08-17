@@ -31,6 +31,8 @@ var __slice = Array.prototype.slice;
         function Sketch(el, opts) {
             this.el = el;
             this.canvas = $(el);
+            this.scale = {x: 0, y: 0}
+            this.container = $(el).parent();
             this.context = el.getContext('2d');
             this.options = $.extend({
                 toolLinks: true,
@@ -66,6 +68,19 @@ var __slice = Array.prototype.slice;
                 });
             }
 
+            //responsive canvas
+            var that = this;
+            function respondCanvas(){
+                that.respondCanvas();
+            }
+            respondCanvas();
+            var repondTimeoutId;
+            window.onresize = function(){
+                clearTimeout(repondTimeoutId);
+                repondTimeoutId = setTimeout(respondCanvas, 100);
+            };
+            $(window).resize(onresize);
+
             if(!this.options.background)
                 return;
 
@@ -82,6 +97,24 @@ var __slice = Array.prototype.slice;
                 that.redraw();
             };
             this.background.src = this.options.background;
+        }
+        Sketch.prototype.respondCanvas = function(){
+            if(this.scale.x == 0 && this.scale.y == 0){
+                this.scale.x = 1;
+                this.scale.y = 1;
+                this.dimensions = {
+                    width: this.container.width(),
+                    height: this.container.height()
+                }
+            }else{
+                this.scale.x = this.container.width() / this.dimensions.width;
+                this.scale.y = this.container.height() / this.dimensions.height;
+            }
+            this.canvas.attr('width', this.container.width() );
+            this.canvas.attr('height', this.container.height() );
+
+            $("#header_title").html(this.scale.x);
+            this.redraw();
         }
         Sketch.prototype.download = function(format) {
             var mime;
@@ -127,6 +160,10 @@ var __slice = Array.prototype.slice;
             var sketch;
             this.el.width = this.canvas.width();
             this.context = this.el.getContext('2d');
+
+            this.context.setTransform(1, 0, 0, 1, 0, 0)
+            this.context.scale(this.scale.x, this.scale.y);
+
             sketch = this;
             $.each(this.actions, function() {
                 if (this.tool) {
@@ -136,6 +173,7 @@ var __slice = Array.prototype.slice;
             if (this.painting && this.action) {
                 return $.sketch.tools[this.action.tool].draw.call(sketch, this.action);
             }
+            this.context.setTransform(1, 0, 0, 1, 0, 0)
         };
         return Sketch;
     })();
@@ -158,18 +196,19 @@ var __slice = Array.prototype.slice;
             }
             if (this.painting) {
                 this.action.events.push({
-                    x: e.pageX - this.canvas.offset().left,
-                    y: e.pageY - this.canvas.offset().top,
+                    x: (e.pageX - this.canvas.offset().left),
+                    y: (e.pageY - this.canvas.offset().top),
                     event: e.type
                 });
                 return this.redraw();
             }
         },
         draw: function(action) {
-
+            console.log("Drawing Marker");
             var event, previous, _i, _len, _ref;
             this.context.lineJoin = "round";
             this.context.lineCap = "round";
+
             this.context.beginPath();
             this.context.moveTo(action.events[0].x, action.events[0].y);
             _ref = action.events;
@@ -180,6 +219,7 @@ var __slice = Array.prototype.slice;
             }
             this.context.strokeStyle = action.color;
             this.context.lineWidth = action.size;
+
             return this.context.stroke();
         },
 
@@ -209,6 +249,7 @@ var __slice = Array.prototype.slice;
             }
         },
         draw: function(action) {
+            console.log("Drawing Background");
             return this.context.drawImage(this.background, 0, 0);
         }
 
