@@ -13,6 +13,12 @@ To use Sketch.js in your project, just grab the latest sketch.js (or minified) f
     });
 </script>
 ```
+If background needed for board then it can be added as an option to sketch:
+```sh
+$('#simple_sketch').sketch({
+    background: "letters.png"
+});
+```
 
 ### Compatibility
 
