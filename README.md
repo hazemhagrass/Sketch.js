@@ -19,6 +19,7 @@ $('#simple_sketch').sketch({
     background: "letters.png"
 });
 ```
+Sketch plugin now is drawing the background dynamically instead of using css attributes, using this way any image manipulations methods of canvas like getImageData can be used.
 
 ### Compatibility
 
