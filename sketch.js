@@ -209,7 +209,7 @@ var __slice = Array.prototype.slice;
             }
         },
         draw: function(action) {
-            return this.context.drawImage(this.background, 0, 0);;
+            return this.context.drawImage(this.background, 0, 0);
         }
 
     };
