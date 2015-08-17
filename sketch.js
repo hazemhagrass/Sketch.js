@@ -86,6 +86,7 @@ var __slice = Array.prototype.slice;
 
             this.background = new Image();
             var backgroundAction = {
+                active: false,
                 tool: "backgroundImage",
                 color: this.color,
                 size: parseFloat(this.size),
@@ -136,11 +137,18 @@ var __slice = Array.prototype.slice;
                 tool: this.tool,
                 color: this.color,
                 size: parseFloat(this.size),
-                events: []
+                events: [],
+                active: true
             };
         };
         Sketch.prototype.stopPainting = function() {
             if (this.action) {
+                this.action.active = false;
+                var that = this;
+                $.each(this.action.events, function(index) {
+                    that.action.events[index].x /= that.scale.x;
+                    that.action.events[index].y /= that.scale.y;
+                });
                 this.actions.push(this.action);
             }
             this.painting = false;
@@ -209,12 +217,16 @@ var __slice = Array.prototype.slice;
             this.context.lineJoin = "round";
             this.context.lineCap = "round";
 
+            var scale = {x: 1, y: 1};
+            if(action.active)
+                scale = this.scale;
+
             this.context.beginPath();
-            this.context.moveTo(action.events[0].x, action.events[0].y);
+            this.context.moveTo(action.events[0].x / scale.x, action.events[0].y / scale.y);
             _ref = action.events;
             for (_i = 0, _len = _ref.length; _i < _len; _i++) {
                 event = _ref[_i];
-                this.context.lineTo(event.x, event.y);
+                this.context.lineTo(event.x / scale.x, event.y / scale.y);
                 previous = event;
             }
             this.context.strokeStyle = action.color;
