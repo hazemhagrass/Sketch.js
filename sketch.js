@@ -74,12 +74,7 @@ var __slice = Array.prototype.slice;
                 that.respondCanvas();
             }
             respondCanvas();
-            var repondTimeoutId;
-            window.onresize = function(){
-                clearTimeout(repondTimeoutId);
-                repondTimeoutId = setTimeout(respondCanvas, 100);
-            };
-            $(window).resize(onresize);
+            $(window).resize(respondCanvas);
 
             if(!this.options.background)
                 return;
