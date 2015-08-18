@@ -20,7 +20,7 @@ $('#simple_sketch').sketch({
 });
 ```
 Sketch plugin now is drawing the background dynamically instead of using css attributes, using this way any image manipulations methods of canvas like getImageData can be used.
-
+Using this plugin not only a responsive canvas can be obtained but also responsiveness to all drawings inside the canvas.
 ### Compatibility
 
 Sketch.js has been tested on Chrome (OS X), Firefox (OS X), Safari (OS X), Android Browser (Honeycomb 3.1). It suffers significant performance degradation on mobile browsers due to general HTML5 Canvas performance issues.
