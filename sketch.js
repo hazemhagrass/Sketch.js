@@ -109,7 +109,6 @@ var __slice = Array.prototype.slice;
             this.canvas.attr('width', this.container.width() );
             this.canvas.attr('height', this.container.height() );
 
-            $("#header_title").html(this.scale.x);
             this.redraw();
         }
         Sketch.prototype.download = function(format) {
@@ -151,12 +150,13 @@ var __slice = Array.prototype.slice;
             return this.redraw();
         };
         Sketch.prototype.onEvent = function(e) {
-            if (e.originalEvent && e.originalEvent.targetTouches) {
+            if (e.originalEvent && e.originalEvent.targetTouches && e.originalEvent.targetTouches.length > 0) {
                 e.pageX = e.originalEvent.targetTouches[0].pageX;
                 e.pageY = e.originalEvent.targetTouches[0].pageY;
             }
             $.sketch.tools[$(this).data('sketch').tool].onEvent.call($(this).data('sketch'), e);
             e.preventDefault();
+
             return false;
         };
         Sketch.prototype.redraw = function() {
